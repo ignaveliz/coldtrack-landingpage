@@ -2,18 +2,20 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/logos/1.png" />
+    <link rel="icon" type="image/png" href="/logos/icon-app.png" />
+    <link rel="apple-touch-icon" href="/logos/icon-round.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ColdTrack: telemetría IoT, diagnóstico automático y mantenimiento para equipos de frío." />
-    <title>ColdTrack · Monitoreo inteligente de la cadena de frío</title>
+    <meta name="theme-color" content="#0b1b3d" />
+    <meta name="description" content="Coldtrack: telemetría IoT, diagnóstico automático y mantenimiento para equipos de frío." />
+    <title>Coldtrack · Monitoreo inteligente de la cadena de frío</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <script>
       try { if (localStorage.getItem('coldtrack-theme') === 'light') document.documentElement.dataset.theme = 'light' } catch {}
     </script>
   </head>
-  <body class="min-h-screen antialiased selection:bg-cold-ice/20 selection:text-cold-ice">
+  <body class="min-h-screen antialiased selection:bg-cold-accent/30 selection:text-cold-text">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
