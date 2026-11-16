@@ -230,7 +230,7 @@ function Fridge({ theme, waveKey, onPoke }) {
   )
 }
 
-export function Mascot({ theme }) {
+export function Mascot({ theme, compact = false }) {
   const [waveKey, setWaveKey] = useState(0)
   const c = palettes[theme]
   const reducedMotion = useMemo(
@@ -241,7 +241,9 @@ export function Mascot({ theme }) {
   return (
     <Canvas
       shadows
-      dpr={[1, 2]}
+      dpr={compact ? [1, 1.5] : [1, 2]}
+      // pan-y: en pantallas táctiles el scroll vertical sigue funcionando aunque el dedo empiece sobre Tracky
+      style={{ touchAction: 'pan-y' }}
       camera={{ position: [0, 0.3, 5.6], fov: 38 }}
       gl={{ antialias: true, alpha: true }}
       aria-label="Mascota 3D de Coldtrack saludando"
@@ -254,7 +256,7 @@ export function Mascot({ theme }) {
       <Float speed={2} rotationIntensity={0.15} floatIntensity={0.5} floatingRange={[-0.05, 0.08]}>
         <Fridge theme={theme} waveKey={waveKey} onPoke={() => setWaveKey((k) => k + 1)} />
       </Float>
-      <Sparkles count={40} scale={[5, 4, 3]} size={2.5} speed={0.35} color={c.sparkle} opacity={0.7} />
+      <Sparkles count={compact ? 18 : 40} scale={[5, 4, 3]} size={2.5} speed={0.35} color={c.sparkle} opacity={0.7} />
       <ContactShadows position={[0, -1.6, 0]} opacity={theme === 'dark' ? 0.6 : 0.3} scale={6} blur={2.6} far={2} color={c.shadow} />
     </Canvas>
   )
