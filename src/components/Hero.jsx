@@ -5,7 +5,6 @@ import { DashboardPreview } from './DashboardPreview'
 const Mascot = lazy(() => import('./Mascot'))
 const desktopQuery = '(min-width: 1024px)'
 
-// Solo monta la mascota 3D en pantallas grandes para no descargar three.js en mobile
 function useIsDesktop() {
   const [matches, setMatches] = useState(() => window.matchMedia(desktopQuery).matches)
   useEffect(() => {
@@ -15,6 +14,20 @@ function useIsDesktop() {
     return () => mq.removeEventListener('change', onChange)
   }, [])
   return matches
+}
+
+// Monta el 3D cuando el navegador queda libre, para no frenar la primera pintura (sobre todo en mobile).
+// El contenedor ya tiene su altura reservada, así que no hay salto de layout.
+function useIdleMount() {
+  const [ready, setReady] = useState(false)
+  useEffect(() => {
+    let id
+    const go = () => setReady(true)
+    if ('requestIdleCallback' in window) id = window.requestIdleCallback(go, { timeout: 1200 })
+    else id = window.setTimeout(go, 300)
+    return () => ('cancelIdleCallback' in window ? window.cancelIdleCallback(id) : window.clearTimeout(id))
+  }, [])
+  return ready
 }
 
 /** Estrella de cuatro puntas del isotipo */
@@ -27,15 +40,16 @@ function Star({ className }) {
 }
 
 export function Hero({ theme, dashboardUrl }) {
-  const showMascot = useIsDesktop()
+  const isDesktop = useIsDesktop()
+  const showMascot = useIdleMount()
 
   return (
-    <section id="inicio" className="relative pt-28 md:pt-36 overflow-hidden">
+    <section id="inicio" className="relative pt-20 md:pt-28 lg:pt-36 overflow-hidden">
       <div className="absolute inset-0 grid-lines pointer-events-none" aria-hidden="true" />
       <div className="glow-ground" aria-hidden="true" />
 
       <Wrap className="relative">
-        <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-10 items-center">
+        <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-2 lg:gap-10 items-center [&>*]:min-w-0">
           <div className="text-center lg:text-left">
             <h1
               className="enter display mx-auto lg:mx-0 max-w-[16ch] text-[40px] sm:text-[56px] lg:text-[64px] xl:text-[72px] text-cold-text"
@@ -70,22 +84,25 @@ export function Hero({ theme, dashboardUrl }) {
             </div>
           </div>
 
-          {/* Tracky, la mascota, al comienzo de la página */}
-          {showMascot && (
-            <div className="enter relative h-[440px] xl:h-[480px]" style={{ '--d': '300ms' }}>
-              <div
-                className="absolute inset-10 rounded-full bg-cold-brand/25 blur-3xl pointer-events-none"
-                aria-hidden="true"
-              />
-              <div className="animate-bubble absolute top-6 left-[56%] z-10 panel rounded-2xl rounded-bl-sm px-4 py-3 max-w-[220px]">
-                <p className="text-sm font-medium text-cold-text">Hola, soy Tracky.</p>
-                <p className="text-xs text-cold-muted mt-0.5">Cuido la temperatura de tus equipos.</p>
-              </div>
-              <Suspense fallback={null}>
-                <Mascot theme={theme} />
-              </Suspense>
+          {/* Tracky: arriba del título en mobile y tablet, a la derecha en escritorio */}
+          <div
+            className="enter order-first lg:order-none relative h-56 sm:h-72 lg:h-[440px] xl:h-[480px] -mx-5 sm:mx-0 overflow-hidden lg:overflow-visible"
+            style={{ '--d': '0ms' }}
+          >
+            <div
+              className="absolute inset-x-16 inset-y-6 lg:inset-10 rounded-full bg-cold-brand/25 blur-3xl pointer-events-none"
+              aria-hidden="true"
+            />
+            <div className="animate-bubble absolute z-10 panel rounded-2xl rounded-bl-sm top-2 right-3 max-w-[150px] px-3 py-2 sm:right-auto sm:left-[58%] sm:max-w-[200px] lg:top-6 lg:left-[56%] lg:max-w-[220px] lg:px-4 lg:py-3">
+              <p className="text-xs sm:text-sm font-medium text-cold-text">Hola, soy Tracky.</p>
+              <p className="hidden sm:block text-xs text-cold-muted mt-0.5">Cuido la temperatura de tus equipos.</p>
             </div>
-          )}
+            {showMascot && (
+              <Suspense fallback={null}>
+                <Mascot theme={theme} compact={!isDesktop} />
+              </Suspense>
+            )}
+          </div>
         </div>
 
         <div className="enter relative mt-14 lg:mt-6 -mb-24 md:-mb-32" style={{ '--d': '420ms' }}>
