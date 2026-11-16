@@ -295,6 +295,16 @@ p {
 .reveal-ready [data-reveal='right'] { transform: translateX(40px); }
 .reveal-ready [data-reveal='zoom'] { transform: scale(0.94) translateY(24px); }
 
+/* Línea del pipeline: se dibuja de izquierda a derecha a la par de los pasos */
+.reveal-ready [data-reveal='line'] {
+  opacity: 1;
+  filter: none;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1.3s cubic-bezier(.6,0,.2,1);
+  transition-delay: var(--rd, 0ms);
+}
+
 .reveal-ready [data-reveal].is-in {
   opacity: 1;
   transform: none;

@@ -241,7 +241,13 @@ export function Pipeline() {
 
         <ol className="mt-16 relative grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Línea con pulso que viaja entre los pasos */}
-          <div className="hidden lg:block absolute left-[10%] right-[10%] top-7 h-px bg-cold-line" aria-hidden="true">
+          {/* Va del centro del primer ícono al centro del último; overflow-hidden recorta el pulso para que no asome */}
+          <div
+            data-reveal="line"
+            className="hidden lg:block absolute left-[10%] right-[10%] top-7 h-px bg-cold-line overflow-hidden"
+            style={{ '--rd': '150ms' }}
+            aria-hidden="true"
+          >
             <span className="pulse-dot" />
             <span className="pulse-dot" style={{ animationDelay: '1.6s' }} />
           </div>
