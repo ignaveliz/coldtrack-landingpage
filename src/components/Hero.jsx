@@ -1,20 +1,11 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
-import { ArrowRight } from 'lucide-react'
-import { Badge, Button } from './ui'
+import { ArrowIcon, Button, Wrap } from './ui'
+import { DashboardPreview } from './DashboardPreview'
 
 const Mascot = lazy(() => import('./Mascot'))
+const desktopQuery = '(min-width: 1024px)'
 
-function MascotFallback() {
-  return (
-    <div className="h-full w-full flex items-center justify-center">
-      <div className="h-24 w-24 rounded-full border-2 border-cold-ice/20 border-t-cold-ice animate-spin" />
-    </div>
-  )
-}
-
-const desktopQuery = '(min-width: 768px)'
-
-// Solo monta la mascota 3D en pantallas md+ para no descargar three.js en mobile
+// Solo monta la mascota 3D en pantallas grandes para no descargar three.js en mobile
 function useIsDesktop() {
   const [matches, setMatches] = useState(() => window.matchMedia(desktopQuery).matches)
   useEffect(() => {
@@ -26,60 +17,86 @@ function useIsDesktop() {
   return matches
 }
 
+/** Estrella de cuatro puntas del isotipo */
+function Star({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
+      <path d="M12 0c.9 6.4 5.6 11.1 12 12-6.4.9-11.1 5.6-12 12-.9-6.4-5.6-11.1-12-12C6.4 11.1 11.1 6.4 12 0Z" fill="currentColor" />
+    </svg>
+  )
+}
+
 export function Hero({ theme, dashboardUrl }) {
   const showMascot = useIsDesktop()
 
   return (
-    <section id="inicio" className="relative pt-28 pb-16 md:pt-40 md:pb-28 overflow-hidden">
-      <div className="absolute inset-0 grid-bg pointer-events-none" aria-hidden="true" />
-      <div className="relative mx-auto max-w-7xl px-4 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
-        <div>
-          <Badge className="mb-6">
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
-              <span className="relative inline-flex size-2 rounded-full bg-emerald-400" />
-            </span>
-            Plataforma IoT para cadena de frío
-          </Badge>
+    <section id="inicio" className="relative pt-28 md:pt-36 overflow-hidden">
+      <div className="absolute inset-0 grid-lines pointer-events-none" aria-hidden="true" />
+      <div className="glow-ground" aria-hidden="true" />
 
-          <h1 className="font-heading font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight leading-[1.05] text-cold-text">
-            Tus equipos de frío,
-            <br />
-            <span className="text-gradient">bajo control en tiempo real.</span>
-          </h1>
+      <Wrap className="relative">
+        <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-10 items-center">
+          <div className="text-center lg:text-left">
+            <h1
+              className="enter display mx-auto lg:mx-0 max-w-[16ch] text-[40px] sm:text-[56px] lg:text-[64px] xl:text-[72px] text-cold-text"
+              style={{ '--d': '80ms' }}
+            >
+              Tus equipos de frío,{' '}
+              <span className="relative inline-block text-cold-accent">
+                bajo control
+                <Star className="twinkle absolute -top-3 -right-6 size-5 text-cold-star" />
+              </span>{' '}
+              en tiempo real.
+            </h1>
 
-          <p className="mt-6 text-lg text-cold-muted leading-relaxed max-w-xl">
-            ColdTrack recibe la telemetría de cada heladera y cámara, detecta fallas antes de que se
-            pierda la mercadería y avisa al propietario y al técnico indicado.
-          </p>
+            <p
+              className="enter mx-auto lg:mx-0 mt-7 max-w-xl text-lg text-cold-muted leading-relaxed"
+              style={{ '--d': '160ms' }}
+            >
+              Coldtrack lee cinco canales de cada heladera y cámara, detecta fallas antes de que se pierda la
+              mercadería y avisa al propietario y al técnico indicado.
+            </p>
 
-          <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <Button as="a" href={dashboardUrl} size="lg">
-              Ingresar al dashboard
-              <ArrowRight className="size-4" />
-            </Button>
-            <Button as="a" href="#como-funciona" size="lg" variant="outline">
-              Ver cómo funciona
-            </Button>
+            <div
+              className="enter mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3"
+              style={{ '--d': '240ms' }}
+            >
+              <Button as="a" href={dashboardUrl} size="lg">
+                Ingresar al dashboard <ArrowIcon />
+              </Button>
+              <Button as="a" href="#como-funciona" size="lg" variant="outline">
+                Ver cómo funciona
+              </Button>
+            </div>
           </div>
-        </div>
 
-        <div className="relative hidden md:block h-[460px] lg:h-[520px]">
-          <div
-            className="absolute inset-8 rounded-full bg-cold-ice/10 blur-3xl pointer-events-none"
-            aria-hidden="true"
-          />
-          <div className="animate-bubble absolute top-4 left-[58%] z-10 glass-panel rounded-2xl rounded-bl-sm px-4 py-3 max-w-[220px]">
-            <p className="text-sm font-semibold text-cold-text">¡Hola! Soy Tracky 👋</p>
-            <p className="text-xs text-cold-muted mt-0.5">Cuido la temperatura de tus equipos.</p>
-          </div>
+          {/* Tracky, la mascota, al comienzo de la página */}
           {showMascot && (
-            <Suspense fallback={<MascotFallback />}>
-              <Mascot theme={theme} />
-            </Suspense>
+            <div className="enter relative h-[440px] xl:h-[480px]" style={{ '--d': '300ms' }}>
+              <div
+                className="absolute inset-10 rounded-full bg-cold-brand/25 blur-3xl pointer-events-none"
+                aria-hidden="true"
+              />
+              <div className="animate-bubble absolute top-6 left-[56%] z-10 panel rounded-2xl rounded-bl-sm px-4 py-3 max-w-[220px]">
+                <p className="text-sm font-medium text-cold-text">Hola, soy Tracky.</p>
+                <p className="text-xs text-cold-muted mt-0.5">Cuido la temperatura de tus equipos.</p>
+              </div>
+              <Suspense fallback={null}>
+                <Mascot theme={theme} />
+              </Suspense>
+            </div>
           )}
         </div>
-      </div>
+
+        <div className="enter relative mt-14 lg:mt-6 -mb-24 md:-mb-32" style={{ '--d': '420ms' }}>
+          <div className="scroll-flatten">
+            <DashboardPreview className="mx-auto max-w-[1100px]" />
+          </div>
+        </div>
+      </Wrap>
+
+      {/* Desvanecido inferior hacia la siguiente sección */}
+      <div className="relative h-40 bg-gradient-to-b from-transparent to-cold-bg pointer-events-none" aria-hidden="true" />
     </section>
   )
 }

@@ -3,28 +3,29 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { ContactShadows, Float, RoundedBox, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
 
+// Colores del brand board: azul #004aad, navy #0b1b3d y el amarillo de la estrella
 const palettes = {
   dark: {
-    body: '#BECFFF',
-    door: '#d4dfff',
-    accent: '#A296BC',
-    handle: '#6f6491',
-    face: '#0C0B0E',
+    body: '#d3e1ff',
+    door: '#eaf1ff',
+    accent: '#004aad',
+    handle: '#0b1b3d',
+    face: '#0b1b3d',
     cheek: '#f3a6c0',
-    led: '#5eead4',
+    led: '#ffe476',
     shadow: '#000000',
-    sparkle: '#BECFFF',
+    sparkle: '#9cc0ff',
   },
   light: {
-    body: '#c9d6f5',
-    door: '#e4ebf6',
-    accent: '#655481',
-    handle: '#304a86',
-    face: '#18243a',
+    body: '#cddcfa',
+    door: '#eaf0fa',
+    accent: '#004aad',
+    handle: '#0b1b3d',
+    face: '#0b1b3d',
     cheek: '#e88aa8',
-    led: '#0e9f8e',
-    shadow: '#253d63',
-    sparkle: '#304a86',
+    led: '#f5c400',
+    shadow: '#0b1b3d',
+    sparkle: '#004aad',
   },
 }
 
@@ -243,13 +244,13 @@ export function Mascot({ theme }) {
       dpr={[1, 2]}
       camera={{ position: [0, 0.3, 5.6], fov: 38 }}
       gl={{ antialias: true, alpha: true }}
-      aria-label="Mascota 3D de ColdTrack saludando"
+      aria-label="Mascota 3D de Coldtrack saludando"
       frameloop={reducedMotion ? 'demand' : 'always'}
     >
       <ambientLight intensity={theme === 'dark' ? 0.55 : 0.8} />
       <directionalLight position={[3, 5, 4]} intensity={1.6} castShadow />
-      <pointLight position={[-3, 1, 2]} intensity={12} color="#A296BC" />
-      <pointLight position={[3, -1, 3]} intensity={8} color="#BECFFF" />
+      <pointLight position={[-3, 1, 2]} intensity={12} color="#004aad" />
+      <pointLight position={[3, -1, 3]} intensity={8} color="#9cc0ff" />
       <Float speed={2} rotationIntensity={0.15} floatIntensity={0.5} floatingRange={[-0.05, 0.08]}>
         <Fridge theme={theme} waveKey={waveKey} onPoke={() => setWaveKey((k) => k + 1)} />
       </Float>

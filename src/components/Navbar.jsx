@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Menu, Moon, Sun, X } from 'lucide-react'
 import clsx from 'clsx'
-import { Button } from './ui'
+import { ArrowIcon, Button } from './ui'
 
 const links = [
   { href: '#funciones', label: 'Funciones' },
@@ -10,15 +10,21 @@ const links = [
   { href: '#roles', label: 'Roles' },
 ]
 
+/** Isotipo del brand board: blanco en tema oscuro, azul de marca en tema claro */
+export function Mark({ className = 'size-8' }) {
+  return (
+    <>
+      <img src="/logos/mark-white.png" alt="" className={`only-dark ${className}`} />
+      <img src="/logos/mark-blue.png" alt="" className={`only-light ${className}`} />
+    </>
+  )
+}
+
 export function Logo() {
   return (
-    <a href="#inicio" className="flex items-center gap-2.5" aria-label="ColdTrack, ir al inicio">
-      <span className="h-8 w-8 rounded-lg bg-cold-dark border border-cold-ice/25 flex items-center justify-center p-1 shadow-[0_0_10px_rgba(190,207,255,0.15)]">
-        <img src="/logos/1.png" alt="" className="h-full w-full object-contain" />
-      </span>
-      <span className="font-heading font-bold text-lg text-cold-text tracking-tight">
-        Cold<span className="text-cold-ice">Track</span>
-      </span>
+    <a href="#inicio" className="flex items-center gap-2.5 rounded-md" aria-label="Coldtrack, ir al inicio">
+      <Mark className="size-8" />
+      <span className="font-heading font-bold text-[19px] tracking-tight text-cold-text">Coldtrack</span>
     </a>
   )
 }
@@ -36,16 +42,13 @@ export function Navbar({ theme, onToggleTheme, dashboardUrl }) {
   }, [])
 
   return (
-    <header
-      className={clsx(
-        'fixed inset-x-0 top-0 z-50 transition-all duration-300',
-        scrolled ? 'py-2' : 'py-4',
-      )}
-    >
+    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3">
       <nav
         className={clsx(
-          'mx-auto max-w-7xl px-4 lg:px-6 h-14 flex items-center justify-between rounded-2xl transition-all duration-300',
-          scrolled && 'glass-panel mx-4 lg:mx-auto',
+          'mx-auto max-w-[1200px] h-14 pl-4 pr-2 flex items-center justify-between rounded-full border transition-all duration-300',
+          scrolled || open
+            ? 'bg-cold-bg/75 backdrop-blur-xl border-cold-line'
+            : 'bg-transparent border-transparent',
         )}
       >
         <Logo />
@@ -55,7 +58,7 @@ export function Navbar({ theme, onToggleTheme, dashboardUrl }) {
             <li key={l.href}>
               <a
                 href={l.href}
-                className="px-3 py-2 text-sm text-cold-muted hover:text-cold-text rounded-lg hover:bg-cold-divider/5 transition-colors"
+                className="relative px-3 py-2 text-sm text-cold-muted hover:text-cold-text transition-colors after:absolute after:left-3 after:right-3 after:bottom-1 after:h-px after:bg-current after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300"
               >
                 {l.label}
               </a>
@@ -63,9 +66,9 @@ export function Navbar({ theme, onToggleTheme, dashboardUrl }) {
           ))}
         </ul>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
             onClick={onToggleTheme}
             aria-pressed={isLight}
@@ -76,7 +79,7 @@ export function Navbar({ theme, onToggleTheme, dashboardUrl }) {
           </Button>
           <span className="hidden sm:block">
             <Button as="a" href={dashboardUrl} size="sm">
-              Ingresar
+              Ingresar <ArrowIcon />
             </Button>
           </span>
           <Button
@@ -85,7 +88,8 @@ export function Navbar({ theme, onToggleTheme, dashboardUrl }) {
             className="md:hidden"
             onClick={() => setOpen((o) => !o)}
             aria-expanded={open}
-            aria-label="Abrir menú"
+            aria-controls="menu-movil"
+            aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
           >
             {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </Button>
@@ -93,19 +97,19 @@ export function Navbar({ theme, onToggleTheme, dashboardUrl }) {
       </nav>
 
       {open && (
-        <div className="md:hidden glass-panel mx-4 mt-2 rounded-2xl p-3">
+        <div id="menu-movil" className="md:hidden panel bg-cold-bg/95 backdrop-blur-xl mt-2 rounded-3xl p-3">
           {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="block px-3 py-2.5 text-sm text-cold-text rounded-lg hover:bg-cold-divider/5"
+              className="flex items-center h-12 px-4 text-base text-cold-text rounded-2xl hover:bg-cold-text/5"
             >
               {l.label}
             </a>
           ))}
-          <Button as="a" href={dashboardUrl} size="sm" className="w-full mt-2">
-            Ingresar al dashboard
+          <Button as="a" href={dashboardUrl} size="lg" className="w-full mt-2">
+            Ingresar al dashboard <ArrowIcon />
           </Button>
         </div>
       )}

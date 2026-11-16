@@ -1,55 +1,67 @@
 import clsx from 'clsx'
 
 const buttonBase =
-  'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-cold-ice/40 select-none rounded-lg cursor-pointer'
+  'group/btn inline-flex items-center justify-center gap-2 font-medium rounded-full cursor-pointer select-none whitespace-nowrap ' +
+  'transition-[transform,background-color,border-color,color,box-shadow] duration-200 ' +
+  'hover:-translate-y-px active:translate-y-0 active:scale-[0.97] ' +
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-cold-accent focus-visible:ring-offset-2 focus-visible:ring-offset-cold-bg'
 
 const buttonVariants = {
+  // Botón blanco sobre fondo oscuro (invertido en tema claro), como en las referencias
+  // Azul de marca (#004aad) del brand board
   primary:
-    'bg-cold-ice text-cold-on-accent font-semibold hover:bg-cold-accent-hover hover:shadow-[0_0_20px_rgba(190,207,255,0.45)] active:scale-[0.98]',
-  secondary:
-    'bg-cold-lavender/15 text-cold-ice border border-cold-lavender/30 hover:bg-cold-lavender/25 hover:border-cold-ice/40 active:scale-[0.98]',
+    'bg-cold-brand text-white hover:bg-[#0a5bd1] shadow-[0_8px_24px_-12px_#004aad] hover:shadow-[0_14px_34px_-12px_#2f74e6]',
   outline:
-    'bg-transparent text-cold-text border border-cold-divider/15 hover:border-cold-ice/50 hover:text-cold-ice hover:bg-cold-ice/5 active:scale-[0.98]',
-  ghost: 'bg-transparent text-cold-muted hover:text-cold-text hover:bg-cold-divider/5',
+    'bg-transparent text-cold-text border border-cold-line hover:border-cold-accent/60 hover:bg-cold-accent/5',
+  ghost: 'bg-transparent text-cold-muted hover:text-cold-text hover:bg-cold-text/5',
 }
 
 const buttonSizes = {
-  sm: 'text-xs px-3 py-1.5 h-8',
-  md: 'text-sm px-4 py-2 h-10',
-  lg: 'text-base px-6 py-3 h-12',
-  icon: 'h-9 w-9 p-0',
+  sm: 'text-sm px-4 h-9',
+  md: 'text-sm px-5 h-11',
+  lg: 'text-[15px] px-6 h-12',
+  icon: 'h-10 w-10 p-0',
 }
 
 export function Button({ as: Tag = 'button', variant = 'primary', size = 'md', className, ...props }) {
   return <Tag className={clsx(buttonBase, buttonVariants[variant], buttonSizes[size], className)} {...props} />
 }
 
-export function Card({ className, hover = true, ...props }) {
+/** Flecha que se desplaza al pasar el cursor por el botón */
+export function ArrowIcon({ className }) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+      className={clsx('size-4 transition-transform duration-200 group-hover/btn:translate-x-0.5', className)}
+    >
+      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+export function Card({ className, lit = false, hover = true, ...props }) {
   return (
     <div
-      className={clsx(
-        'glass-panel rounded-xl p-6 relative overflow-hidden transition-all duration-300',
-        hover && 'glass-panel-hover',
-        className,
-      )}
+      className={clsx(lit ? 'panel-lit' : 'panel', 'relative overflow-hidden', hover && 'lift', className)}
       {...props}
     />
   )
 }
 
 const badgeVariants = {
-  default: 'bg-cold-ice/10 text-cold-ice border-cold-ice/25',
-  secondary: 'bg-cold-lavender/10 text-cold-lavender border-cold-lavender/25',
-  success: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25',
-  warning: 'bg-amber-500/10 text-amber-400 border-amber-500/25',
-  danger: 'bg-rose-500/10 text-rose-400 border-rose-500/25',
+  default: 'bg-cold-accent/10 text-cold-accent border-cold-accent/25',
+  muted: 'bg-cold-text/5 text-cold-muted border-cold-line',
+  success: 'bg-cold-ok/10 text-cold-ok border-cold-ok/25',
+  danger: 'bg-cold-alert/10 text-cold-alert border-cold-alert/30',
 }
 
 export function Badge({ variant = 'default', className, ...props }) {
   return (
     <span
       className={clsx(
-        'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border tracking-wide select-none',
+        'inline-flex items-center gap-1.5 px-2.5 h-6 rounded-full text-xs font-medium border select-none',
         badgeVariants[variant],
         className,
       )}
@@ -58,24 +70,21 @@ export function Badge({ variant = 'default', className, ...props }) {
   )
 }
 
-export function SectionHeading({ eyebrow, title, children, center = true }) {
+export function SectionHeading({ eyebrow, title, children, center = false, className }) {
   return (
-    <div className={clsx('max-w-2xl mb-12', center && 'mx-auto text-center')}>
-      <span className="font-mono text-[11px] font-semibold tracking-[0.2em] uppercase text-cold-lavender">
-        {eyebrow}
-      </span>
-      <h2 className="font-heading font-extrabold text-3xl md:text-4xl tracking-tight text-cold-text mt-3">
-        {title}
-      </h2>
-      {children && <p className="text-cold-muted mt-4 leading-relaxed">{children}</p>}
+    <div data-reveal="up" className={clsx('max-w-2xl', center && 'mx-auto text-center', className)}>
+      <span className="eyebrow">{eyebrow}</span>
+      <h2 className="display text-4xl md:text-[56px] text-cold-text mt-4">{title}</h2>
+      {children && <p className="text-cold-muted text-lg mt-5 leading-relaxed">{children}</p>}
     </div>
   )
 }
 
-export function Reveal({ className, children, delay = 0 }) {
-  return (
-    <div className={clsx('reveal', className)} style={{ transitionDelay: `${delay}ms` }}>
-      {children}
-    </div>
-  )
+export function Wrap({ className, ...props }) {
+  return <div className={clsx('mx-auto w-full max-w-[1200px] px-5 md:px-8', className)} {...props} />
+}
+
+/** Envuelve un bloque para que aparezca al entrar en pantalla. variant: up | left | right | zoom */
+export function Reveal({ as: Tag = 'div', variant = 'up', delay = 0, className, style, ...props }) {
+  return <Tag data-reveal={variant} className={className} style={{ '--rd': `${delay}ms`, ...style }} {...props} />
 }
